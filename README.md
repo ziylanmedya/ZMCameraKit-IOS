@@ -11,7 +11,7 @@
   - Privacy - Microphone Usage Description
 
 ### XCode 16 Update:
-- Proje targeti seçilip Build Settings kısmında sağ üstten `+` tıklanarak `Add-User Defined Setting` seçilmelidir. Açılan alana `STRIP_BITCODE_FROM_COPIED_FILES` yazılmalı ve tüm değerler `NO` olarak set edilmelidir.
+- Proje targeti seçilip Build Settings kısmında sol üstten `+` tıklanarak `Add-User Defined Setting` seçilmelidir. Açılan alana `STRIP_BITCODE_FROM_COPIED_FILES` yazılmalı ve tüm değerler `NO` olarak set edilmelidir.
 
 ## Nasıl Kullanılır?
 
