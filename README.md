@@ -22,4 +22,5 @@ ZiylanMedyaCameraKit'in kulllanılacğı yerlerde;
 Başlatmak için: `ZMCKit.initialize()`
 ### Ayağında dene deneyimi için: 
 `ZMCKit.presentSplashExperience(from: self, snapAPIToken: snapAPIToken, partnerGroupId: partnerGroupId)`
+
 Not: Bu test versiyonu için gerekli token değerleri sizlerle paylaşılacaktır.
