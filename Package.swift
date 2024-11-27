@@ -1,10 +1,10 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.9
 import PackageDescription
 
 let package = Package(
     name: "ZMCKit",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v12)
     ],
     products: [
         .library(
