@@ -20,7 +20,37 @@ ZiylanMedyaCameraKit'in kulllanılacğı yerlerde;
 `import ZMCKit` şeklinde paketin import edilmesi gerekmektedir.
 
 Başlatmak için: `ZMCKit.initialize()`
-### Ayağında dene deneyimi için: 
-`ZMCKit.presentSplashExperience(from: self, snapAPIToken: snapAPIToken, partnerGroupId: partnerGroupId)`
 
-Not: Bu test versiyonu için gerekli token değerleri sizlerle paylaşılacaktır.
+### Tekli ürün deneyimi için: 
+`let singleLensView = ZMCKit.createSingleProductView(
+    snapAPIToken: "YOUR_SNAP_API_TOKEN",
+    partnerGroupId: "YOUR_GROUP_ID",
+    lensId: "YOUR_LENS_ID"
+)`
+
+### Çoklu ürün deneyimi için:
+`let multiLensView = ZMCKit.createMultiProductView(
+    snapAPIToken: "YOUR_SNAP_API_TOKEN",
+    partnerGroupId: "YOUR_GROUP_ID"
+)`
+
+Her iki deneyim için de ilgili View oluşturulduktan sonra, eklenilmek istenen view'a
+`addSubview()` metodu ile eklenmelidir.
+
+### Anlık gösterilen lens bilgisine ulaşmak için:
+`ZMCKit.onLensChange { lensId in
+    if let lensId = lensId {
+        print("Current lens ID: \(lensId)")
+    }
+}` bu callback fonksiyonun ek olarak, 
+`if let currentLensId = ZMCKit.currentLensId {
+    print("Active lens: \(currentLensId)")
+}` şeklinde de anlık lens bilgisine ulaşabilirsiniz.
+
+### Temizlik
+Bu işlem için aşağıdaki iki fonksiyonu da kullanabilirsiniz: 
+`
+cameraView.cleanup()
+cameraView.removeFromSuperview() // Bu işlem otomatik olarak cleanup fonksiyonunu da çağırır
+`
+
