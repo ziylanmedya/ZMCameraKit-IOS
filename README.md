@@ -13,39 +13,73 @@
 ### XCode 16 Update:
 - Proje targeti seçilip Build Settings kısmında sol üstten `+` tıklanarak `Add-User Defined Setting` seçilmelidir. Açılan alana `STRIP_BITCODE_FROM_COPIED_FILES` yazılmalı ve tüm değerler `NO` olarak set edilmelidir.
 
+## Gereksinimler
+
+- iOS 13.0+
+- Swift 5.9+
+- Xcode 15.0+
+- Geçerli API Token
+- Geçerli Group Id
+- Fiziksel cihaz (simulator sadece derleme için desteklenir)
+
+
 ## Nasıl Kullanılır?
 
-ZiylanMedyaCameraKit'in kulllanılacğı yerlerde;
+Öncelikle ZMCKit'i uygulamanızda başlatın:
 
-`import ZMCKit` şeklinde paketin import edilmesi gerekmektedir.
+`import ZMCKit
+// AppDelegate'de veya uygulama yaşam döngüsünün başında
+ZMCKit.initialize()`
 
-Başlatmak için: `ZMCKit.initialize()`
-
-### Tekli ürün deneyimi için: 
+### Tekli Lens Deneyimi
 `let singleLensView = ZMCKit.createSingleProductView(
-    snapAPIToken: "YOUR_SNAP_API_TOKEN",
-    partnerGroupId: "YOUR_GROUP_ID",
-    lensId: "YOUR_LENS_ID"
+  snapAPIToken: "api-token",
+  partnerGroupId: "group-id",
+  lensId: "lens-id"
 )`
 
 ### Çoklu ürün deneyimi için:
 `let multiLensView = ZMCKit.createMultiProductView(
-    snapAPIToken: "YOUR_SNAP_API_TOKEN",
-    partnerGroupId: "YOUR_GROUP_ID"
+  snapAPIToken: "api-token",
+  partnerGroupId: "group-id"
 )`
 
-Her iki deneyim için de ilgili View oluşturulduktan sonra, eklenilmek istenen view'a
-`addSubview()` metodu ile eklenmelidir.
+View hiyerarşisine ekleyin:
+`view.addSubview(singleLensView)`
+`view.addSubview(multiLensView)`
+
+### Çekimleri Yönetme
+
+Çekilen fotoğrafları yönetmek için `ZMCameraDelegate` protokolünü uygulayın:
+`extension YourViewController: ZMCameraDelegate {
+  func cameraDidCapture(image: UIImage?) {
+    // Çekilen fotoğrafı yönetin
+  }
+  func shouldShowDefaultPreview() -> Bool {
+    // Önizlemeyi kendiniz yönetmek için false dönün
+    return true
+  }
+  func willShowPreview(image: UIImage?) {
+  // Önizleme gösterilmeden önce çağrılır
+  }
+}
+// Delegate'i ayarlayın
+multiLensView.delegate = self
+singleLensView.delegate = self`
 
 ### Anlık gösterilen lens bilgisine ulaşmak için:
 `ZMCKit.onLensChange { lensId in
     if let lensId = lensId {
         print("Current lens ID: \(lensId)")
     }
-}` bu callback fonksiyonun ek olarak, 
+}` 
+bu callback fonksiyonun ek olarak, 
+
 `if let currentLensId = ZMCKit.currentLensId {
     print("Active lens: \(currentLensId)")
-}` şeklinde de anlık lens bilgisine ulaşabilirsiniz.
+}` 
+
+şeklinde de anlık lens bilgisine ulaşabilirsiniz.
 
 ### Temizlik
 Bu işlem için aşağıdaki iki fonksiyonu da kullanabilirsiniz: 
