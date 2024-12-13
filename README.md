@@ -55,7 +55,7 @@ View hiyerarşisine ekleyin:
 
 Çekilen fotoğrafları yönetmek için `ZMCameraDelegate` protokolünü uygulayın:
 
-`
+```swift
 extension YourViewController: ZMCameraDelegate {
   func cameraDidCapture(image: UIImage?) {
     // Çekilen fotoğrafı yönetin
@@ -70,7 +70,8 @@ extension YourViewController: ZMCameraDelegate {
 }
 // Delegate'i ayarlayın
 multiLensView.delegate = self
-singleLensView.delegate = self`
+singleLensView.delegate = self
+```
 
 ### Anlık gösterilen lens bilgisine ulaşmak için:
 
