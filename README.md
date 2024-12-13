@@ -32,6 +32,7 @@
 ZMCKit.initialize()`
 
 ### Tekli Lens Deneyimi
+
 `let singleLensView = ZMCKit.createSingleProductView(
   snapAPIToken: "api-token",
   partnerGroupId: "group-id",
@@ -39,19 +40,22 @@ ZMCKit.initialize()`
 )`
 
 ### Çoklu ürün deneyimi için:
+
 `let multiLensView = ZMCKit.createMultiProductView(
   snapAPIToken: "api-token",
   partnerGroupId: "group-id"
 )`
 
 View hiyerarşisine ekleyin:
+
 `view.addSubview(singleLensView)`
 `view.addSubview(multiLensView)`
 
 ### Çekimleri Yönetme
 
 Çekilen fotoğrafları yönetmek için `ZMCameraDelegate` protokolünü uygulayın:
-swift
+
+`
 extension YourViewController: ZMCameraDelegate {
   func cameraDidCapture(image: UIImage?) {
     // Çekilen fotoğrafı yönetin
@@ -69,6 +73,7 @@ multiLensView.delegate = self
 singleLensView.delegate = self`
 
 ### Anlık gösterilen lens bilgisine ulaşmak için:
+
 `ZMCKit.onLensChange { lensId in
     if let lensId = lensId {
         print("Current lens ID: \(lensId)")
