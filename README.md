@@ -51,7 +51,8 @@ View hiyerarşisine ekleyin:
 ### Çekimleri Yönetme
 
 Çekilen fotoğrafları yönetmek için `ZMCameraDelegate` protokolünü uygulayın:
-`extension YourViewController: ZMCameraDelegate {
+swift
+extension YourViewController: ZMCameraDelegate {
   func cameraDidCapture(image: UIImage?) {
     // Çekilen fotoğrafı yönetin
   }
