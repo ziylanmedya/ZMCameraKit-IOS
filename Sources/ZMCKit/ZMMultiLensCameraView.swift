@@ -6,17 +6,33 @@
 //
 
 import UIKit
+#if !targetEnvironment(simulator)
 @preconcurrency import SCSDKCameraKit
 import SCSDKCameraKitReferenceUI
+#endif
 
 @available(iOS 13.0, *)
 public class ZMMultiLensCameraView: ZMCameraView {
+    #if !targetEnvironment(simulator)
     private var lenses: [Lens] = []
+    private let photoOutput = AVCapturePhotoOutput()
+    #endif
+    
     private var currentLensIndex: Int = 0
+    
     private var imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 100
         return cache
+    }()
+    
+    private lazy var processingLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Lütfen Bekleyiniz..."
+        label.textColor = .white
+        label.textAlignment = .center
+        label.alpha = 0
+        return label
     }()
     
     private lazy var collectionView: UICollectionView = {
@@ -35,42 +51,76 @@ public class ZMMultiLensCameraView: ZMCameraView {
         return collectionView
     }()
     
+    private lazy var captureButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 35
+        button.layer.borderWidth = 3
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.addTarget(self, action: #selector(handleCapture), for: .touchUpInside)
+        return button
+    }()
+    
     public override init(snapAPIToken: String, partnerGroupId: String, frame: CGRect = .zero) {
         super.init(snapAPIToken: snapAPIToken, partnerGroupId: partnerGroupId, frame: frame)
         setupUI()
         setupLenses()
+        setupCaptureOutputs()
     }
     
-    required init?(coder: NSCoder) {
+    @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private func setupUI() {
-        // Setup collection view with proper layout
+        cameraView.cameraButton.isHidden = true
+        cameraView.cameraActionsView.isHidden = true
+        cameraView.carouselView.isHidden = true
+        
         addSubview(collectionView)
+        addSubview(captureButton)
+        addSubview(processingLabel)
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        captureButton.translatesAutoresizingMaskIntoConstraints = false
+        processingLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            collectionView.heightAnchor.constraint(equalToConstant: 100)
+            captureButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            captureButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            captureButton.widthAnchor.constraint(equalToConstant: 70),
+            captureButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            collectionView.bottomAnchor.constraint(equalTo: captureButton.topAnchor, constant: -20),
+            collectionView.heightAnchor.constraint(equalToConstant: 80),
+            
+            processingLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            processingLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
         
-        // Make sure collection view is on top
+        collectionView.backgroundColor = .clear
         bringSubviewToFront(collectionView)
-        
-        // Update collection view layout
-        if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            flowLayout.itemSize = CGSize(width: 70, height: 70)
-            flowLayout.minimumInteritemSpacing = 10
-            flowLayout.minimumLineSpacing = 10
-            flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-            flowLayout.scrollDirection = .horizontal
-        }
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        bringSubviewToFront(collectionView)
     }
     
     private func setupLenses() {
         cameraKit.lenses.repository.addObserver(self, groupID: self.partnerGroupId)
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    
+    private func setupCaptureOutputs() {
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+        }
     }
     
     private func applyLens(lens: Lens) {
@@ -82,6 +132,35 @@ public class ZMMultiLensCameraView: ZMCameraView {
                 print("Failed to apply lens: \(lens.id)")
             }
         }
+    }
+    
+    private func showProcessing() {
+        UIView.animate(withDuration: 0.3) {
+            self.processingLabel.alpha = 1
+        }
+    }
+    
+    private func hideProcessing() {
+        UIView.animate(withDuration: 0.3) {
+            self.processingLabel.alpha = 0
+        }
+    }
+    
+    private func capturePhoto() {
+        showProcessing()
+        let settings = AVCapturePhotoSettings()
+        photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+    
+    @objc private func handleCapture() {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.captureButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.captureButton.transform = .identity
+            }
+        }
+        capturePhoto()
     }
 }
 
@@ -99,32 +178,63 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 70, height: 70)
-    }
-    
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentLensIndex = indexPath.item
-        applyLens(lens: lenses[currentLensIndex])
+        let lens = lenses[currentLensIndex]
+        applyLens(lens: lens)
     }
 }
 
-// MARK: - LensRepositoryGroupObserver
+// MARK: - Lens Repository Observer
 @available(iOS 13.0, *)
 extension ZMMultiLensCameraView: LensRepositoryGroupObserver {
     public func repository(_ repository: any LensRepository, didUpdateLenses lenses: [any Lens], forGroupID groupID: String) {
         self.lenses = lenses as? [Lens] ?? []
         
-        DispatchQueue.main.async { [weak self] in
-            self?.collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
             
-            if !self!.lenses.isEmpty && self!.currentLensIndex == 0 {
-                self?.applyLens(lens: self!.lenses[0])
+            // Apply first lens if available
+            if let firstLens = self.lenses.first {
+                self.applyLens(lens: firstLens)
             }
         }
     }
     
-    public func repository(_ repository: any LensRepository, didFailToUpdateLensesForGroupID groupID: String, error: (any Error)?) {
-        print("Failed to update lenses for group")
+    public func repository(_ repository: any LensRepository, didFailToUpdateLensesForGroupID groupID: String, error: Error?) {
+        print("Failed to update lenses for group: \(error?.localizedDescription ?? "")")
     }
-} 
+}
+
+// MARK: - Photo Capture Delegate
+@available(iOS 13.0, *)
+extension ZMMultiLensCameraView: AVCapturePhotoCaptureDelegate {
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            let renderer = UIGraphicsImageRenderer(bounds: self.previewView.bounds)
+            let image = renderer.image { ctx in
+                self.previewView.drawHierarchy(in: self.previewView.bounds, afterScreenUpdates: true)
+            }
+            
+            // Notify delegate about the captured image
+            self.delegate?.cameraDidCapture(image: image)
+            self.delegate?.willShowPreview(image: image)
+            
+            // Check if we should show default preview
+            if self.delegate?.shouldShowDefaultPreview() ?? true {
+                if let viewController = self.findViewController() {
+                    let previewVC = ZMCapturePreviewViewController(image: image)
+                    previewVC.modalPresentationStyle = .fullScreen
+                    viewController.present(previewVC, animated: true) {
+                        self.hideProcessing()
+                    }
+                }
+            } else {
+                self.hideProcessing()
+            }
+        }
+    }
+}
+
