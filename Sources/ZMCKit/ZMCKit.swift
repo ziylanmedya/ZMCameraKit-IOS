@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 #if !targetEnvironment(simulator)
-@_exported import SCSDKCameraKitReferenceUI
 @_exported import SCSDKCameraKit
 @_exported import SCSDKCoreKit
 @_exported import SCSDKCreativeKit
@@ -37,8 +36,18 @@ public struct ZMCKit {
         lensChangeCallback?(lensId)
     }
     
-    public static func initialize() {
-        print("ZMCKit initialized")
+    public static func initialize(completion: @escaping (Bool) -> Void) {
+        CameraPermissionHandler.checkCameraPermission { status in
+            switch status {
+            case .authorized:
+                print("ZMCKit initialized")
+                completion(true)
+            case .denied, .restricted:
+                completion(false)
+            case .notDetermined:        
+                break
+            }
+        }
     }
     
     /// Creates a single-product camera view.
@@ -55,16 +64,12 @@ public struct ZMCKit {
         lensId: String,
         bundleIdentifier: String = Bundle.main.bundleIdentifier ?? ""
     ) -> ZMSingleCameraView {
-        #if targetEnvironment(simulator)
-        return SimulatorCameraView()
-        #else
         return ZMSingleCameraView(
             snapAPIToken: snapAPIToken,
             partnerGroupId: partnerGroupId,
             lensId: lensId,
             bundleIdentifier: bundleIdentifier
         )
-        #endif
     }
     
     /// Creates a multi-product camera view.
@@ -78,13 +83,9 @@ public struct ZMCKit {
         snapAPIToken: String,
         partnerGroupId: String
     ) -> ZMMultiLensCameraView {
-        #if targetEnvironment(simulator)
-        return SimulatorCameraView()
-        #else
         return ZMMultiLensCameraView(
             snapAPIToken: snapAPIToken,
             partnerGroupId: partnerGroupId
         )
-        #endif
     }
 }
