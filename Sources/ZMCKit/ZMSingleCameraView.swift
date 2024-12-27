@@ -7,7 +7,6 @@
 
 import UIKit
 import SCSDKCameraKit
-import SCSDKCameraKitReferenceUI
 import AVFoundation
 
 @available(iOS 13.0, *)
@@ -53,7 +52,7 @@ public class ZMSingleCameraView: ZMCameraView {
     }
     
     private func setupLens() {
-        cameraView.carouselView.isHidden = true
+        //cameraView.carouselView.isHidden = true
         cameraKit.lenses.repository.addObserver(self,
                                               specificLensID: self.lensId,
                                               inGroupID: self.partnerGroupId)
@@ -65,9 +64,7 @@ public class ZMSingleCameraView: ZMCameraView {
         }
     }
     
-    private func setupCustomCameraButton() {
-        cameraView.cameraButton.isHidden = true
-        
+    private func setupCustomCameraButton() {        
         addSubview(cameraButton)
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
