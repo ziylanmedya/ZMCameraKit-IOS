@@ -44,7 +44,7 @@ public class LensCell: UICollectionViewCell {
     }
     
     private var whiteBackgroundSize: CGFloat { 68 }
-    private var highlightRingSize: CGFloat { 56 } // 6pt ring
+    private var highlightRingSize: CGFloat { isSelected ? 56 : 0 } // Only show for selected
     private var imageViewSize: CGFloat { 44 }
     
     private func setupUI() {
@@ -114,13 +114,8 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            if isSelected {
-                highlightRingView.backgroundColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 0.5) // lighter ring
-                imageView.isHidden = false
-            } else {
-                highlightRingView.backgroundColor = .clear
-                imageView.isHidden = false
-            }
+            highlightRingView.backgroundColor = isSelected ? UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 0.5) : .clear
+            highlightRingView.isHidden = !isSelected
             UIView.animate(withDuration: 0.2) {
                 self.transform = self.isSelected ? 
                     CGAffineTransform(scaleX: 1.1, y: 1.1) : 
