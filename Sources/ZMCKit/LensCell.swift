@@ -14,7 +14,7 @@ public class LensCell: UICollectionViewCell {
     private let highlightRingView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        view.layer.borderWidth = 3
+        view.layer.borderWidth = 2  // Slightly thinner border for inner ring
         view.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor // #8A5535
         view.isHidden = true
         return view
@@ -43,11 +43,11 @@ public class LensCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            // Make highlight ring larger than the image
+            // Make highlight ring same size as image but with inner border
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            highlightRingView.widthAnchor.constraint(equalToConstant: 70),  // Slightly larger than image
-            highlightRingView.heightAnchor.constraint(equalToConstant: 70),  // Slightly larger than image
+            highlightRingView.widthAnchor.constraint(equalToConstant: 60),  // Same as image
+            highlightRingView.heightAnchor.constraint(equalToConstant: 60),  // Same as image
             
             // Center the image in the cell
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -59,11 +59,14 @@ public class LensCell: UICollectionViewCell {
         // Make circular
         contentView.layoutIfNeeded()
         // Set corner radius to half the width to make it circular
-        highlightRingView.layer.cornerRadius = 35  // 70 / 2
+        highlightRingView.layer.cornerRadius = 30  // 60 / 2
         highlightRingView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 30  // 60 / 2
+        // Make image slightly smaller to show the border
+        imageView.layer.cornerRadius = 28  // Slightly smaller than highlight ring
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = .clear
+        // Add padding to show the highlight ring
+        imageView.layoutMargins = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     }
     
     func configure(with lens: Lens, cache: NSCache<NSString, UIImage>) {
