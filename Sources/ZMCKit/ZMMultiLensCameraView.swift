@@ -102,9 +102,13 @@ public class ZMMultiLensCameraView: ZMCameraView {
     
     private func setupLenses() {
         cameraKit.lenses.repository.addObserver(self, groupID: self.partnerGroupId)
-        
         DispatchQueue.main.async {
+            self.currentLensIndex = 0
             self.collectionView.reloadData()
+            if self.lenses.count > 0 {
+                let firstIndexPath = IndexPath(item: 0, section: 0)
+                self.collectionView.selectItem(at: firstIndexPath, animated: false, scrollPosition: [])
+            }
         }
     }
     

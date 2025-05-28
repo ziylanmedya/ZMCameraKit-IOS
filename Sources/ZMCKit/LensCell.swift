@@ -114,7 +114,13 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            highlightRingView.backgroundColor = isSelected ? UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0) : .clear
+            if isSelected {
+                highlightRingView.backgroundColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 0.5) // lighter ring
+                imageView.isHidden = false
+            } else {
+                highlightRingView.backgroundColor = .clear
+                imageView.isHidden = false
+            }
             UIView.animate(withDuration: 0.2) {
                 self.transform = self.isSelected ? 
                     CGAffineTransform(scaleX: 1.1, y: 1.1) : 
