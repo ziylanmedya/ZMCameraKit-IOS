@@ -29,6 +29,7 @@ public class LensCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.backgroundColor = .white
         iv.layer.borderWidth = 0
         iv.layer.borderColor = UIColor.clear.cgColor
         return iv
