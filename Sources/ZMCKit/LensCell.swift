@@ -11,12 +11,19 @@ import SCSDKCameraKit
 
 @available(iOS 13.0, *)
 public class LensCell: UICollectionViewCell {
+    private let highlightRingView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .clear
+        v.isUserInteractionEnabled = false
+        return v
+    }()
+    
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.layer.borderWidth = 3
-        iv.layer.borderColor = UIColor.white.cgColor
+        iv.layer.borderWidth = 0 // No border
+        iv.layer.borderColor = UIColor.clear.cgColor
         return iv
     }()
     
@@ -29,20 +36,30 @@ public class LensCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private var highlightRingSize: CGFloat { 68 } // 8pt larger than imageView
+    private var imageViewSize: CGFloat { 60 }
+    
     private func setupUI() {
+        contentView.addSubview(highlightRingView)
         contentView.addSubview(imageView)
+        highlightRingView.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        // Make it square first
         NSLayoutConstraint.activate([
+            highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            highlightRingView.widthAnchor.constraint(equalToConstant: highlightRingSize),
+            highlightRingView.heightAnchor.constraint(equalToConstant: highlightRingSize),
+            
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 60), // Slightly smaller
-            imageView.heightAnchor.constraint(equalToConstant: 60)
+            imageView.widthAnchor.constraint(equalToConstant: imageViewSize),
+            imageView.heightAnchor.constraint(equalToConstant: imageViewSize)
         ])
         
-        // Then make it circular
-        imageView.layer.cornerRadius = 30 // Half of width/height
+        highlightRingView.layer.cornerRadius = highlightRingSize / 2
+        highlightRingView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = imageViewSize / 2
         imageView.layer.masksToBounds = true
     }
     
@@ -80,10 +97,7 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            imageView.layer.borderColor = isSelected ? 
-                UIColor(red: 255/255, green: 103/255, blue: 29/255, alpha: 1.0).cgColor : 
-                UIColor.white.cgColor
-            
+            highlightRingView.backgroundColor = isSelected ? UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0) : .clear
             UIView.animate(withDuration: 0.2) {
                 self.transform = self.isSelected ? 
                     CGAffineTransform(scaleX: 1.1, y: 1.1) : 
@@ -96,5 +110,6 @@ public class LensCell: UICollectionViewCell {
         super.prepareForReuse()
         imageView.image = nil
         transform = .identity
+        highlightRingView.backgroundColor = .clear
     }
 } 
