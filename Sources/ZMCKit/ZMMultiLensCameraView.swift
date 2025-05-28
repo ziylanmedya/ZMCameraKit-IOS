@@ -176,7 +176,9 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
         let lens = lenses[currentLensIndex]
         applyLens(lens: lens)
         // Reload only the affected cells for selection effect
-        collectionView.reloadItems(at: [indexPath, IndexPath(item: previousIndex, section: 0)])
+        collectionView.performBatchUpdates({
+            collectionView.reloadItems(at: [indexPath, IndexPath(item: previousIndex, section: 0)])
+        }, completion: nil)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
