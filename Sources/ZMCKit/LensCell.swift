@@ -11,27 +11,19 @@ import SCSDKCameraKit
 
 @available(iOS 13.0, *)
 public class LensCell: UICollectionViewCell {
-    private let whiteBackgroundView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .white
-        v.isUserInteractionEnabled = false
-        return v
-    }()
-    
     private let highlightRingView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .clear
-        v.isUserInteractionEnabled = false
-        return v
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.borderWidth = 4
+        view.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor // #8A5535
+        view.isHidden = true
+        return view
     }()
     
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.backgroundColor = .white
-        iv.layer.borderWidth = 0
-        iv.layer.borderColor = UIColor.clear.cgColor
         return iv
     }()
     
@@ -44,40 +36,29 @@ public class LensCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var whiteBackgroundSize: CGFloat { 68 }
-    private var highlightRingSize: CGFloat { isSelected ? 56 : 0 } // Only show for selected
-    private var imageViewSize: CGFloat { 44 }
-    
     private func setupUI() {
-        contentView.addSubview(whiteBackgroundView)
         contentView.addSubview(highlightRingView)
         contentView.addSubview(imageView)
-        whiteBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         highlightRingView.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            whiteBackgroundView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            whiteBackgroundView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            whiteBackgroundView.widthAnchor.constraint(equalToConstant: whiteBackgroundSize),
-            whiteBackgroundView.heightAnchor.constraint(equalToConstant: whiteBackgroundSize),
-            
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            highlightRingView.widthAnchor.constraint(equalToConstant: highlightRingSize),
-            highlightRingView.heightAnchor.constraint(equalToConstant: highlightRingSize),
+            highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            highlightRingView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
             
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: imageViewSize),
-            imageView.heightAnchor.constraint(equalToConstant: imageViewSize)
+            imageView.widthAnchor.constraint(equalToConstant: 60),
+            imageView.heightAnchor.constraint(equalToConstant: 60)
         ])
         
-        whiteBackgroundView.layer.cornerRadius = whiteBackgroundSize / 2
-        whiteBackgroundView.layer.masksToBounds = true
-        highlightRingView.layer.cornerRadius = highlightRingSize / 2
+        // Make circular
+        contentView.layoutIfNeeded()
+        highlightRingView.layer.cornerRadius = contentView.bounds.width / 2
         highlightRingView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = imageViewSize / 2
+        imageView.layer.cornerRadius = 30
         imageView.layer.masksToBounds = true
     }
     
@@ -115,20 +96,24 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            highlightRingView.backgroundColor = isSelected ? UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 0.5) : .clear
-            highlightRingView.isHidden = true
             UIView.animate(withDuration: 0.2) {
-                self.transform = self.isSelected ? 
-                    CGAffineTransform(scaleX: 1.1, y: 1.1) : 
+                self.highlightRingView.isHidden = !self.isSelected
+                self.transform = self.isSelected ?
+                    CGAffineTransform(scaleX: 1.1, y: 1.1) :
                     .identity
             }
         }
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        highlightRingView.layer.cornerRadius = highlightRingView.bounds.width / 2
     }
     
     public override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
         transform = .identity
-        highlightRingView.backgroundColor = .clear
+        highlightRingView.isHidden = true
     }
 } 

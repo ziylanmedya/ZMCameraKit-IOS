@@ -102,13 +102,9 @@ public class ZMMultiLensCameraView: ZMCameraView {
     
     private func setupLenses() {
         cameraKit.lenses.repository.addObserver(self, groupID: self.partnerGroupId)
+        
         DispatchQueue.main.async {
-            self.currentLensIndex = 0
             self.collectionView.reloadData()
-            if self.lenses.count > 0 {
-                let firstIndexPath = IndexPath(item: 0, section: 0)
-                self.collectionView.selectItem(at: firstIndexPath, animated: false, scrollPosition: [])
-            }
         }
     }
     
@@ -170,7 +166,6 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LensCell", for: indexPath) as! LensCell
         let lens = lenses[indexPath.item]
         cell.configure(with: lens, cache: imageCache)
-        cell.isSelected = (indexPath.item == currentLensIndex)
         return cell
     }
     
@@ -182,7 +177,7 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == currentLensIndex {
-            return CGSize(width: 90, height: 90)
+            return CGSize(width: 80, height: 80)
         } else {
             return CGSize(width: 60, height: 60)
         }
