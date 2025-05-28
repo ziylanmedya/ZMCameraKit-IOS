@@ -80,12 +80,14 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            if isSelected {
-                imageView.layer.borderColor = UIColor(red: 0x8A/255.0, green: 0x55/255.0, blue: 0x35/255.0, alpha: 1.0).cgColor // #8A5535
-                imageView.layer.borderWidth = 5
-            } else {
-                imageView.layer.borderColor = UIColor.white.cgColor
-                imageView.layer.borderWidth = 3
+            imageView.layer.borderColor = isSelected ? 
+                UIColor(red: 255/255, green: 103/255, blue: 29/255, alpha: 1.0).cgColor : 
+                UIColor.white.cgColor
+            
+            UIView.animate(withDuration: 0.2) {
+                self.transform = self.isSelected ? 
+                    CGAffineTransform(scaleX: 1.1, y: 1.1) : 
+                    .identity
             }
         }
     }
@@ -93,5 +95,6 @@ public class LensCell: UICollectionViewCell {
     public override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
+        transform = .identity
     }
 } 

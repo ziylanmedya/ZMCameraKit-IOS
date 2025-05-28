@@ -170,21 +170,16 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let previousIndex = currentLensIndex
         currentLensIndex = indexPath.item
         let lens = lenses[currentLensIndex]
         applyLens(lens: lens)
-        // Reload only the affected cells for selection effect
-        collectionView.performBatchUpdates({
-            collectionView.reloadItems(at: [indexPath, IndexPath(item: previousIndex, section: 0)])
-        }, completion: nil)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView.indexPathsForSelectedItems?.contains(indexPath) == true {
-            return CGSize(width: 80, height: 80) // Selected cell size
+        if indexPath.item == currentLensIndex {
+            return CGSize(width: 80, height: 80)
         } else {
-            return CGSize(width: 60, height: 60) // Normal cell size
+            return CGSize(width: 60, height: 60)
         }
     }
 }
