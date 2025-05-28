@@ -11,6 +11,13 @@ import SCSDKCameraKit
 
 @available(iOS 13.0, *)
 public class LensCell: UICollectionViewCell {
+    private let whiteBackgroundView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .white
+        v.isUserInteractionEnabled = false
+        return v
+    }()
+    
     private let highlightRingView: UIView = {
         let v = UIView()
         v.backgroundColor = .clear
@@ -22,7 +29,7 @@ public class LensCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.layer.borderWidth = 0 // No border
+        iv.layer.borderWidth = 0
         iv.layer.borderColor = UIColor.clear.cgColor
         return iv
     }()
@@ -36,16 +43,24 @@ public class LensCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var highlightRingSize: CGFloat { 68 } // 8pt larger than imageView
-    private var imageViewSize: CGFloat { 60 }
+    private var whiteBackgroundSize: CGFloat { 68 }
+    private var highlightRingSize: CGFloat { 56 } // 6pt ring
+    private var imageViewSize: CGFloat { 44 }
     
     private func setupUI() {
+        contentView.addSubview(whiteBackgroundView)
         contentView.addSubview(highlightRingView)
         contentView.addSubview(imageView)
+        whiteBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         highlightRingView.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            whiteBackgroundView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            whiteBackgroundView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            whiteBackgroundView.widthAnchor.constraint(equalToConstant: whiteBackgroundSize),
+            whiteBackgroundView.heightAnchor.constraint(equalToConstant: whiteBackgroundSize),
+            
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             highlightRingView.widthAnchor.constraint(equalToConstant: highlightRingSize),
@@ -57,6 +72,8 @@ public class LensCell: UICollectionViewCell {
             imageView.heightAnchor.constraint(equalToConstant: imageViewSize)
         ])
         
+        whiteBackgroundView.layer.cornerRadius = whiteBackgroundSize / 2
+        whiteBackgroundView.layer.masksToBounds = true
         highlightRingView.layer.cornerRadius = highlightRingSize / 2
         highlightRingView.layer.masksToBounds = true
         imageView.layer.cornerRadius = imageViewSize / 2
