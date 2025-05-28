@@ -33,9 +33,9 @@ public class ZMMultiLensCameraView: ZMCameraView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 24
-        layout.minimumLineSpacing = 24
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+        layout.minimumInteritemSpacing = 20
+        layout.minimumLineSpacing = 20
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -177,7 +177,7 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == currentLensIndex {
-            return CGSize(width: 80, height: 80)
+            return CGSize(width: 100, height: 100)
         } else {
             return CGSize(width: 60, height: 60)
         }
