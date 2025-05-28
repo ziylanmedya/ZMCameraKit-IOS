@@ -96,11 +96,20 @@ public class LensCell: UICollectionViewCell {
     
     public override var isSelected: Bool {
         didSet {
-            UIView.animate(withDuration: 0.2) {
-                self.highlightRingView.isHidden = !self.isSelected
-                self.transform = self.isSelected ?
-                    CGAffineTransform(scaleX: 1.1, y: 1.1) :
-                    .identity
+            if isSelected {
+                highlightRingView.isHidden = false
+                highlightRingView.alpha = 0
+                UIView.animate(withDuration: 0.2) {
+                    self.highlightRingView.alpha = 1
+                    self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                }
+            } else {
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.highlightRingView.alpha = 0
+                    self.transform = .identity
+                }) { _ in
+                    self.highlightRingView.isHidden = true
+                }
             }
         }
     }
@@ -115,5 +124,6 @@ public class LensCell: UICollectionViewCell {
         imageView.image = nil
         transform = .identity
         highlightRingView.isHidden = true
+        highlightRingView.alpha = 0
     }
 } 
