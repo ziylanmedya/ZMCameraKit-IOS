@@ -166,6 +166,7 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LensCell", for: indexPath) as! LensCell
         let lens = lenses[indexPath.item]
         cell.configure(with: lens, cache: imageCache)
+        cell.isSelected = (indexPath.item == currentLensIndex)
         return cell
     }
     
