@@ -25,7 +25,7 @@ public class LensCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.layer.borderWidth = 1
-        iv.layer.borderColor = UIColor.black.cgColor
+        iv.layer.borderColor =  UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor
         return iv
     }()
     
@@ -107,6 +107,8 @@ public class LensCell: UICollectionViewCell {
             if isSelected {
                 highlightRingView.isHidden = false
                 highlightRingView.alpha = 0
+                // Reset transform before applying new one
+                self.transform = .identity
                 UIView.animate(withDuration: 0.2) {
                     self.highlightRingView.alpha = 1
                     self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
@@ -124,6 +126,8 @@ public class LensCell: UICollectionViewCell {
                     self.highlightRingView.layer.shadowOpacity = 0
                 }) { _ in
                     self.highlightRingView.isHidden = true
+                    // Ensure transform is reset in completion
+                    self.transform = .identity
                 }
             }
         }
@@ -137,8 +141,13 @@ public class LensCell: UICollectionViewCell {
     public override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
+        // Reset all transforms and visual states
         transform = .identity
         highlightRingView.isHidden = true
         highlightRingView.alpha = 0
+        highlightRingView.layer.shadowOpacity = 0
+        // Force layout update
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 } 
