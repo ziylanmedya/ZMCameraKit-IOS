@@ -13,8 +13,8 @@ import SCSDKCameraKit
 public class LensCell: UICollectionViewCell {
     private let highlightRingView: UIView = {
         let view = UIView()
-        view.backgroundColor = .clear
-        view.layer.borderWidth = 2.5
+        view.backgroundColor = .white
+        view.layer.borderWidth = 1
         view.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor // #8A5535
         view.isHidden = true
         return view
@@ -24,6 +24,8 @@ public class LensCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.layer.borderWidth = 1
+        iv.layer.borderColor = UIColor.black.cgColor
         return iv
     }()
     
