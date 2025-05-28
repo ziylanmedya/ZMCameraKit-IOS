@@ -14,7 +14,7 @@ public class LensCell: UICollectionViewCell {
     private let highlightRingView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        view.layer.borderWidth = 4
+        view.layer.borderWidth = 3
         view.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor // #8A5535
         view.isHidden = true
         return view
@@ -43,11 +43,13 @@ public class LensCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            // Make highlight ring larger than the image
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            highlightRingView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
+            highlightRingView.widthAnchor.constraint(equalToConstant: 70),  // Slightly larger than image
+            highlightRingView.heightAnchor.constraint(equalToConstant: 70),  // Slightly larger than image
             
+            // Center the image in the cell
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             imageView.widthAnchor.constraint(equalToConstant: 60),
@@ -56,10 +58,12 @@ public class LensCell: UICollectionViewCell {
         
         // Make circular
         contentView.layoutIfNeeded()
-        highlightRingView.layer.cornerRadius = contentView.bounds.width / 2
+        // Set corner radius to half the width to make it circular
+        highlightRingView.layer.cornerRadius = 35  // 70 / 2
         highlightRingView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 30
+        imageView.layer.cornerRadius = 30  // 60 / 2
         imageView.layer.masksToBounds = true
+        imageView.backgroundColor = .clear
     }
     
     func configure(with lens: Lens, cache: NSCache<NSString, UIImage>) {
@@ -102,11 +106,18 @@ public class LensCell: UICollectionViewCell {
                 UIView.animate(withDuration: 0.2) {
                     self.highlightRingView.alpha = 1
                     self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                    // Add a subtle shadow for depth
+                    self.highlightRingView.layer.shadowColor = UIColor.black.cgColor
+                    self.highlightRingView.layer.shadowOffset = CGSize(width: 0, height: 2)
+                    self.highlightRingView.layer.shadowRadius = 4
+                    self.highlightRingView.layer.shadowOpacity = 0.3
                 }
             } else {
                 UIView.animate(withDuration: 0.2, animations: {
                     self.highlightRingView.alpha = 0
                     self.transform = .identity
+                    // Remove shadow when not selected
+                    self.highlightRingView.layer.shadowOpacity = 0
                 }) { _ in
                     self.highlightRingView.isHidden = true
                 }
