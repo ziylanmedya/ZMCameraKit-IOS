@@ -170,6 +170,7 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LensCell", for: indexPath) as! LensCell
         let lens = lenses[indexPath.item]
         cell.configure(with: lens, cache: imageCache)
+        cell.isSelected = (indexPath.item == currentLensIndex)
         return cell
     }
     
@@ -181,7 +182,7 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == currentLensIndex {
-            return CGSize(width: 80, height: 80)
+            return CGSize(width: 90, height: 90)
         } else {
             return CGSize(width: 60, height: 60)
         }
