@@ -14,7 +14,7 @@ public class LensCell: UICollectionViewCell {
     private let highlightRingView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        view.layer.borderWidth = 3  // Slightly thicker border for better visibility
+        view.layer.borderWidth = 2.5
         view.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor // #8A5535
         view.isHidden = true
         return view
@@ -43,30 +43,29 @@ public class LensCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            // Make highlight ring larger to accommodate padding
+            // Position the highlight ring slightly inset from the image view
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            highlightRingView.widthAnchor.constraint(equalToConstant: 64),  // Slightly larger to show padding
-            highlightRingView.heightAnchor.constraint(equalToConstant: 64),  // Slightly larger to show padding
+            highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),  // 90% of cell width
+            highlightRingView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9),  // 90% of cell height
             
-            // Center the image in the cell
+            // Center the image in the cell, same size as highlight ring
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 60),
-            imageView.heightAnchor.constraint(equalToConstant: 60)
+            imageView.widthAnchor.constraint(equalTo: highlightRingView.widthAnchor, multiplier: 0.85),  // 85% of ring size
+            imageView.heightAnchor.constraint(equalTo: highlightRingView.heightAnchor, multiplier: 0.85)  // 85% of ring size
         ])
         
         // Make circular
         contentView.layoutIfNeeded()
         // Set corner radius to half the width to make it circular
-        highlightRingView.layer.cornerRadius = 32  // 64 / 2
+        highlightRingView.layer.cornerRadius = highlightRingView.bounds.width / 2
         highlightRingView.layer.masksToBounds = true
-        // Make image smaller to show the border with padding
-        imageView.layer.cornerRadius = 26  // Smaller to show padding and border
+        
+        // Make image circular with a bit of padding from the highlight ring
+        imageView.layer.cornerRadius = imageView.bounds.width / 2
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = .clear
-        // Add padding around the image to show the highlight ring
-        imageView.layoutMargins = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
     }
     
     func configure(with lens: Lens, cache: NSCache<NSString, UIImage>) {
