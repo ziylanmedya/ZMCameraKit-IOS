@@ -45,17 +45,17 @@ public class LensCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            // Position the highlight ring slightly inset from the image view
+            // Position the highlight ring to fill most of the cell
             highlightRingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),  // 90% of cell width
-            highlightRingView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9),  // 90% of cell height
+            highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.95),  // 95% of cell width
+            highlightRingView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.95),  // 95% of cell height
             
-            // Center the image in the cell, same size as highlight ring
+            // Center the image in the cell, slightly smaller than the highlight ring
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalTo: highlightRingView.widthAnchor, multiplier: 0.85),  // 85% of ring size
-            imageView.heightAnchor.constraint(equalTo: highlightRingView.heightAnchor, multiplier: 0.85)  // 85% of ring size
+            imageView.widthAnchor.constraint(equalTo: highlightRingView.widthAnchor, multiplier: 0.9),  // 90% of ring size
+            imageView.heightAnchor.constraint(equalTo: highlightRingView.heightAnchor, multiplier: 0.9)  // 90% of ring size
         ])
         
         // Make circular
@@ -111,19 +111,23 @@ public class LensCell: UICollectionViewCell {
                 self.transform = .identity
                 UIView.animate(withDuration: 0.2) {
                     self.highlightRingView.alpha = 1
-                    self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-                    // Add a subtle shadow for depth
+                    // Larger scale for more prominent selection
+                    self.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+                    // Enhanced shadow for better depth
                     self.highlightRingView.layer.shadowColor = UIColor.black.cgColor
-                    self.highlightRingView.layer.shadowOffset = CGSize(width: 0, height: 2)
-                    self.highlightRingView.layer.shadowRadius = 4
-                    self.highlightRingView.layer.shadowOpacity = 0.3
+                    self.highlightRingView.layer.shadowOffset = CGSize(width: 0, height: 4)
+                    self.highlightRingView.layer.shadowRadius = 8
+                    self.highlightRingView.layer.shadowOpacity = 0.4
+                    // Thicker border for selected state
+                    self.highlightRingView.layer.borderWidth = 2.5
                 }
             } else {
                 UIView.animate(withDuration: 0.2, animations: {
                     self.highlightRingView.alpha = 0
                     self.transform = .identity
-                    // Remove shadow when not selected
+                    // Remove shadow and reset border when not selected
                     self.highlightRingView.layer.shadowOpacity = 0
+                    self.highlightRingView.layer.borderWidth = 1
                 }) { _ in
                     self.highlightRingView.isHidden = true
                     // Ensure transform is reset in completion

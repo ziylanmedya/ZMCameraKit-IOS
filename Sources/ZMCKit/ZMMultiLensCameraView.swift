@@ -33,8 +33,8 @@ public class ZMMultiLensCameraView: ZMCameraView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 24
-        layout.minimumLineSpacing = 24
+        layout.minimumInteritemSpacing = 20
+        layout.minimumLineSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
