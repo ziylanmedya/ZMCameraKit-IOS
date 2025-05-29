@@ -20,12 +20,18 @@ public class LensCell: UICollectionViewCell {
         return view
     }()
     
+    private let imageBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
+    
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.layer.borderWidth = 1
-        iv.layer.borderColor =  UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor
+        iv.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor
         return iv
     }()
     
@@ -45,6 +51,7 @@ public class LensCell: UICollectionViewCell {
         
         // Add to content view
         contentView.addSubview(highlightRingView)
+        contentView.addSubview(imageBackgroundView)
         contentView.addSubview(imageView)
         
         // Enable clipping for the highlight ring and image view
@@ -61,6 +68,12 @@ public class LensCell: UICollectionViewCell {
             highlightRingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             highlightRingView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),
             highlightRingView.heightAnchor.constraint(equalTo: highlightRingView.widthAnchor),
+            
+            // Position the white background behind the image
+            imageBackgroundView.centerXAnchor.constraint(equalTo: highlightRingView.centerXAnchor),
+            imageBackgroundView.centerYAnchor.constraint(equalTo: highlightRingView.centerYAnchor),
+            imageBackgroundView.widthAnchor.constraint(equalTo: highlightRingView.widthAnchor, multiplier: 0.9),
+            imageBackgroundView.heightAnchor.constraint(equalTo: highlightRingView.heightAnchor, multiplier: 0.9),
             
             // Center the image in the highlight ring
             imageView.centerXAnchor.constraint(equalTo: highlightRingView.centerXAnchor),
@@ -94,14 +107,17 @@ public class LensCell: UICollectionViewCell {
     private func updateCornerRadii() {
         // Calculate corner radius based on current bounds
         let highlightCornerRadius = highlightRingView.bounds.width / 2
+        let backgroundCornerRadius = imageBackgroundView.bounds.width / 2
         let imageCornerRadius = imageView.bounds.width / 2
         
         // Apply corner radius
         highlightRingView.layer.cornerRadius = highlightCornerRadius
+        imageBackgroundView.layer.cornerRadius = backgroundCornerRadius
         imageView.layer.cornerRadius = imageCornerRadius
         
         // Force redraw
         highlightRingView.layoutIfNeeded()
+        imageBackgroundView.layoutIfNeeded()
         imageView.layoutIfNeeded()
     }
     
