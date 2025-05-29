@@ -33,9 +33,9 @@ public class ZMMultiLensCameraView: ZMCameraView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 20
-        layout.minimumLineSpacing = 20
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+        layout.minimumInteritemSpacing = 16
+        layout.minimumLineSpacing = 16
+        layout.sectionInset = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -84,8 +84,8 @@ public class ZMMultiLensCameraView: ZMCameraView {
             
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            collectionView.bottomAnchor.constraint(equalTo: captureButton.topAnchor, constant: -20),
-            collectionView.heightAnchor.constraint(equalToConstant: 80),
+            collectionView.bottomAnchor.constraint(equalTo: captureButton.topAnchor, constant: -16),
+            collectionView.heightAnchor.constraint(equalToConstant: 90),
             
             processingLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             processingLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
@@ -176,11 +176,8 @@ extension ZMMultiLensCameraView: UICollectionViewDataSource, UICollectionViewDel
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.item == currentLensIndex {
-            return CGSize(width: 80, height: 80)
-        } else {
-            return CGSize(width: 60, height: 60)
-        }
+        // Use a consistent size for all cells
+        return CGSize(width: 70, height: 70)
     }
 }
 
