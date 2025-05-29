@@ -39,9 +39,17 @@ public class LensCell: UICollectionViewCell {
     }
     
     private func setupUI() {
+        // Configure content view
+        contentView.clipsToBounds = false
+        contentView.backgroundColor = .clear
+        
         // Add to content view
         contentView.addSubview(highlightRingView)
         contentView.addSubview(imageView)
+        
+        // Enable clipping for the highlight ring and image view
+        highlightRingView.clipsToBounds = true
+        imageView.clipsToBounds = true
         
         // Disable autoresizing mask translation
         highlightRingView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +76,6 @@ public class LensCell: UICollectionViewCell {
         highlightRingView.isHidden = true
         
         imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
         imageView.layer.borderWidth = 1
         imageView.layer.borderColor = UIColor(red: 138/255, green: 85/255, blue: 53/255, alpha: 1.0).cgColor
         imageView.backgroundColor = .clear
@@ -77,14 +84,25 @@ public class LensCell: UICollectionViewCell {
         contentView.layoutIfNeeded()
         
         // Set initial corner radius
-        let highlightCornerRadius = highlightRingView.bounds.width / 2
-        let imageCornerRadius = imageView.bounds.width / 2
-        highlightRingView.layer.cornerRadius = highlightCornerRadius
-        imageView.layer.cornerRadius = imageCornerRadius
+        updateCornerRadii()
         
         // Ensure masksToBounds is set
         highlightRingView.layer.masksToBounds = true
         imageView.layer.masksToBounds = true
+    }
+    
+    private func updateCornerRadii() {
+        // Calculate corner radius based on current bounds
+        let highlightCornerRadius = highlightRingView.bounds.width / 2
+        let imageCornerRadius = imageView.bounds.width / 2
+        
+        // Apply corner radius
+        highlightRingView.layer.cornerRadius = highlightCornerRadius
+        imageView.layer.cornerRadius = imageCornerRadius
+        
+        // Force redraw
+        highlightRingView.layoutIfNeeded()
+        imageView.layoutIfNeeded()
     }
     
     func configure(with lens: Lens, cache: NSCache<NSString, UIImage>) {
@@ -124,31 +142,48 @@ public class LensCell: UICollectionViewCell {
             if isSelected {
                 highlightRingView.isHidden = false
                 highlightRingView.alpha = 0
-                // Reset transform before applying new one
-                self.transform = .identity
+                
+                // Reset transforms before animation
+                contentView.transform = .identity
+                highlightRingView.transform = .identity
+                imageView.transform = .identity
+                
+                // Update corner radius before animation
+                updateCornerRadii()
+                
                 UIView.animate(withDuration: 0.2) {
                     self.highlightRingView.alpha = 1
-                    // Scale up the content view, not the cell itself
-                    self.contentView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-                    // Enhanced shadow for better depth
+                    
+                    // Scale up the content view and its subviews
+                    let scale: CGFloat = 1.2
+                    self.contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
+                    
+                    // Ensure the highlight ring and image view maintain their circular shape
+                    self.updateCornerRadii()
+                    
+                    // Visual feedback for selection
                     self.highlightRingView.layer.shadowColor = UIColor.black.cgColor
                     self.highlightRingView.layer.shadowOffset = CGSize(width: 0, height: 3)
                     self.highlightRingView.layer.shadowRadius = 6
                     self.highlightRingView.layer.shadowOpacity = 0.3
-                    // Thicker border for selected state
                     self.highlightRingView.layer.borderWidth = 2
                 }
             } else {
                 UIView.animate(withDuration: 0.2, animations: {
                     self.highlightRingView.alpha = 0
                     self.contentView.transform = .identity
-                    // Remove shadow and reset border when not selected
+                    
+                    // Update corner radius during animation
+                    self.updateCornerRadii()
+                    
+                    // Reset visual feedback
                     self.highlightRingView.layer.shadowOpacity = 0
                     self.highlightRingView.layer.borderWidth = 1
                 }) { _ in
                     self.highlightRingView.isHidden = true
-                    // Ensure transform is reset in completion
+                    // Ensure final state is clean
                     self.contentView.transform = .identity
+                    self.updateCornerRadii()
                 }
             }
         }
@@ -157,14 +192,11 @@ public class LensCell: UICollectionViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Ensure circular shape for both views
-        let cornerRadius = min(highlightRingView.bounds.width, highlightRingView.bounds.height) / 2
-        highlightRingView.layer.cornerRadius = cornerRadius
-        imageView.layer.cornerRadius = min(imageView.bounds.width, imageView.bounds.height) / 2
+        // Update corner radii when layout changes
+        updateCornerRadii()
         
-        // Ensure masksToBounds is set for both views
-        highlightRingView.layer.masksToBounds = true
-        imageView.layer.masksToBounds = true
+        // Ensure content is properly centered during rotation/layout changes
+        contentView.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
     
     public override func prepareForReuse() {
