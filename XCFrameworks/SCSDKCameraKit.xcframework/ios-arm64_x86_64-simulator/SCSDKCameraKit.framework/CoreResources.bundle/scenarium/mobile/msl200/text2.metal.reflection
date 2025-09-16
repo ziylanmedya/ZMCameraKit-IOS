@@ -1,0 +1,136 @@
+//SG_REFLECTION_BEGIN(200)
+//attribute vec4 position 0
+//attribute vec2 texture0 3
+//attribute vec2 texture1 4
+//attribute float passIdentifierAttr 5
+//attribute float sdfOffsetAttr 6
+//attribute vec3 normal 1
+//attribute vec4 tangent 2
+//output vec4 FragColor0 0
+//output vec4 FragColor1 1
+//output vec4 FragColor2 2
+//output vec4 FragColor3 3
+//sampler sampler backgroundFillTextureSmpSC 0:20
+//sampler sampler colorTextureSmpSC 0:21
+//sampler sampler mainFillTextureSmpSC 0:22
+//sampler sampler mainTextureSmpSC 0:23
+//sampler sampler outlineFillTextureSmpSC 0:24
+//sampler sampler shadowFillTextureSmpSC 0:36
+//texture texture2D backgroundFillTexture 0:3:0:20
+//texture texture2D colorTexture 0:4:0:21
+//texture texture2D mainFillTexture 0:5:0:22
+//texture texture2D mainTexture 0:6:0:23
+//texture texture2D outlineFillTexture 0:7:0:24
+//texture texture2D shadowFillTexture 0:19:0:36
+//ubo int UserUniforms 0:37:5120 {
+//float4 sc_UniformConstants 1392
+//float4x4 sc_ModelViewProjectionMatrixArray 1424:[2]:64
+//float4x4 sc_ViewProjectionMatrixArray 1680:[2]:64
+//float4x4 sc_ModelViewMatrixArray 1936:[2]:64
+//float4x4 sc_ModelMatrix 3024
+//sc_Camera_t sc_Camera 3472
+//float3 sc_Camera.position 0
+//float sc_Camera.aspect 16
+//float2 sc_Camera.clipPlanes 24
+//float4 sc_StereoClipPlanes 3664:[2]:16
+//float3x3 mainTextureTransform 4240
+//float4 mainTextureUvMinMax 4288
+//float4 mainTextureBorderColor 4304
+//float3x3 colorTextureTransform 4368
+//float4 colorTextureUvMinMax 4416
+//float4 colorTextureBorderColor 4432
+//float3x3 mainFillTextureTransform 4496
+//float4 mainFillTextureUvMinMax 4544
+//float4 mainFillTextureBorderColor 4560
+//float3x3 shadowFillTextureTransform 4624
+//float4 shadowFillTextureUvMinMax 4672
+//float4 shadowFillTextureBorderColor 4688
+//float3x3 outlineFillTextureTransform 4752
+//float4 outlineFillTextureUvMinMax 4800
+//float4 outlineFillTextureBorderColor 4816
+//float3x3 backgroundFillTextureTransform 4880
+//float4 backgroundFillTextureUvMinMax 4928
+//float4 backgroundFillTextureBorderColor 4944
+//float4 mainColor 4960
+//float4 shadowColor 4976
+//float4 outlineColor 4992
+//float4 backgroundColor 5008
+//float4 mainFillColorTint 5024
+//float4 shadowFillColorTint 5040
+//float4 outlineFillColorTint 5056
+//float4 backgroundFillColorTint 5072
+//float backgroundCornerRadius 5088
+//float2 backgroundSize 5096
+//float multisampleBlend 5104
+//float sdfOpacityVal1 5108
+//float sdfOpacityVal2 5112
+//}
+//ssbo int sc_RayTracingCasterIndexBuffer 0:0:4 {
+//uint sc_RayTracingCasterTriangles 0:[1]:4
+//}
+//ssbo float sc_RayTracingCasterNonAnimatedVertexBuffer 0:2:4 {
+//float sc_RayTracingCasterNonAnimatedVertices 0:[1]:4
+//}
+//ssbo float sc_RayTracingCasterVertexBuffer 0:1:4 {
+//float sc_RayTracingCasterVertices 0:[1]:4
+//}
+//spec_const bool BACKGROUND_FILL_COLOR 0 0
+//spec_const bool BACKGROUND_FILL_TEXTURE 1 0
+//spec_const bool ENABLE_BACKGROUND 2 0
+//spec_const bool ENABLE_OUTLINE 3 0
+//spec_const bool ENABLE_SDF 4 0
+//spec_const bool ENABLE_SHADOW 5 0
+//spec_const bool MAIN_FILL_COLOR 6 0
+//spec_const bool MAIN_FILL_TEXTURE 7 0
+//spec_const bool OUTLINE_FILL_COLOR 8 0
+//spec_const bool OUTLINE_FILL_TEXTURE 9 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_backgroundFillTexture 10 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_colorTexture 11 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_mainFillTexture 12 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_mainTexture 13 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_outlineFillTexture 14 0
+//spec_const bool SC_USE_CLAMP_TO_BORDER_shadowFillTexture 15 0
+//spec_const bool SC_USE_UV_MIN_MAX_backgroundFillTexture 16 0
+//spec_const bool SC_USE_UV_MIN_MAX_colorTexture 17 0
+//spec_const bool SC_USE_UV_MIN_MAX_mainFillTexture 18 0
+//spec_const bool SC_USE_UV_MIN_MAX_mainTexture 19 0
+//spec_const bool SC_USE_UV_MIN_MAX_outlineFillTexture 20 0
+//spec_const bool SC_USE_UV_MIN_MAX_shadowFillTexture 21 0
+//spec_const bool SC_USE_UV_TRANSFORM_backgroundFillTexture 22 0
+//spec_const bool SC_USE_UV_TRANSFORM_colorTexture 23 0
+//spec_const bool SC_USE_UV_TRANSFORM_mainFillTexture 24 0
+//spec_const bool SC_USE_UV_TRANSFORM_mainTexture 25 0
+//spec_const bool SC_USE_UV_TRANSFORM_outlineFillTexture 26 0
+//spec_const bool SC_USE_UV_TRANSFORM_shadowFillTexture 27 0
+//spec_const bool SHADOW_FILL_COLOR 28 0
+//spec_const bool SHADOW_FILL_TEXTURE 29 0
+//spec_const bool backgroundFillTextureHasSwappedViews 30 0
+//spec_const bool colorTextureHasSwappedViews 31 0
+//spec_const bool mainFillTextureHasSwappedViews 32 0
+//spec_const bool mainTextureHasSwappedViews 33 0
+//spec_const bool outlineFillTextureHasSwappedViews 34 0
+//spec_const bool sc_MotionVectorsPass 35 0
+//spec_const bool shadowFillTextureHasSwappedViews 36 0
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_backgroundFillTexture 37 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_colorTexture 38 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_mainFillTexture 39 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_mainTexture 40 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_outlineFillTexture 41 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_U_shadowFillTexture 42 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_backgroundFillTexture 43 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_colorTexture 44 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_mainFillTexture 45 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_mainTexture 46 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_outlineFillTexture 47 -1
+//spec_const int SC_SOFTWARE_WRAP_MODE_V_shadowFillTexture 48 -1
+//spec_const int backgroundFillTextureLayout 49 0
+//spec_const int colorTextureLayout 50 0
+//spec_const int mainFillTextureLayout 51 0
+//spec_const int mainTextureLayout 52 0
+//spec_const int outlineFillTextureLayout 53 0
+//spec_const int sc_RenderingSpace 54 -1
+//spec_const int sc_ShaderCacheConstant 55 0
+//spec_const int sc_StereoRenderingMode 56 0
+//spec_const int sc_StereoRendering_IsClipDistanceEnabled 57 0
+//spec_const int shadowFillTextureLayout 58 0
+//SG_REFLECTION_END

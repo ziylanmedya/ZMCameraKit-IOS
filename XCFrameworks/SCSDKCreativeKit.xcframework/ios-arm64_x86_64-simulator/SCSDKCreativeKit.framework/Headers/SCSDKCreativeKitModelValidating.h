@@ -6,7 +6,7 @@
 //  Copyright © 2019 Snap, Inc. All rights reserved.
 //
 
-#import "SCSDKSnapErrorCode.h"
+#import <SCSDKCreativeKit/SCSDKSnapErrorCode.h>
 
 #import <Foundation/Foundation.h>
 

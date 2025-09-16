@@ -67,6 +67,9 @@
 #ifndef SC_DEVICE_CLASS
 #define SC_DEVICE_CLASS -1
 #endif
+#ifndef sc_ShaderCacheConstant
+#define sc_ShaderCacheConstant 0
+#endif
 #ifndef sc_CanUseSampler2DArray
 #define sc_CanUseSampler2DArray 0
 #elif sc_CanUseSampler2DArray==1
@@ -394,6 +397,12 @@
 #undef sc_TAAEnabled
 #define sc_TAAEnabled 1
 #endif
+#ifndef sc_TAADisabled
+#define sc_TAADisabled 0
+#elif sc_TAADisabled==1
+#undef sc_TAADisabled
+#define sc_TAADisabled 1
+#endif
 #ifndef sc_VertexBlending
 #define sc_VertexBlending 0
 #elif sc_VertexBlending==1
@@ -532,6 +541,7 @@ uniform vec3 sc_LocalAabbMax;
 uniform vec3 sc_WorldAabbMin;
 uniform vec3 sc_WorldAabbMax;
 uniform vec4 sc_WindowToViewportTransform;
+uniform vec4 sc_CurrentRenderTargetDims;
 uniform sc_Camera_t sc_Camera;
 uniform float sc_ShadowDensity;
 uniform vec4 sc_ShadowColor;
@@ -968,6 +978,9 @@ return gl_VertexID;
 #ifndef SC_DEVICE_CLASS
 #define SC_DEVICE_CLASS -1
 #endif
+#ifndef sc_ShaderCacheConstant
+#define sc_ShaderCacheConstant 0
+#endif
 #ifndef sc_CanUseSampler2DArray
 #define sc_CanUseSampler2DArray 0
 #elif sc_CanUseSampler2DArray==1
@@ -1292,6 +1305,12 @@ return gl_VertexID;
 #undef sc_TAAEnabled
 #define sc_TAAEnabled 1
 #endif
+#ifndef sc_TAADisabled
+#define sc_TAADisabled 0
+#elif sc_TAADisabled==1
+#undef sc_TAADisabled
+#define sc_TAADisabled 1
+#endif
 #ifndef sc_VertexBlending
 #define sc_VertexBlending 0
 #elif sc_VertexBlending==1
@@ -1391,7 +1410,7 @@ vec3 color;
 uniform vec4 sc_EnvmapDiffuseDims;
 uniform vec4 sc_EnvmapSpecularDims;
 uniform vec4 sc_ScreenTextureDims;
-uniform vec4 sc_WindowToViewportTransform;
+uniform vec4 sc_CurrentRenderTargetDims;
 uniform mat4 sc_ProjectionMatrixArray[sc_NumStereoViews];
 uniform sc_PointLight_t sc_PointLights[(sc_PointLightsCount+1)];
 uniform sc_DirectionalLight_t sc_DirectionalLights[(sc_DirectionalLightsCount+1)];
@@ -1430,6 +1449,7 @@ uniform vec3 sc_LocalAabbMin;
 uniform vec3 sc_LocalAabbMax;
 uniform vec3 sc_WorldAabbMin;
 uniform vec3 sc_WorldAabbMax;
+uniform vec4 sc_WindowToViewportTransform;
 uniform sc_Camera_t sc_Camera;
 uniform float sc_ShadowDensity;
 uniform vec4 sc_ShadowColor;
@@ -1751,30 +1771,38 @@ vec4 sc_GetGlFragCoord()
 {
 return gl_FragCoord;
 }
-vec2 sc_GetGlobalScreenCoords()
-{
-return (sc_GetGlFragCoord().xy*sc_WindowToViewportTransform.xy)+sc_WindowToViewportTransform.zw;
-}
-vec2 sc_GetViewScreenCoords()
-{
-return sc_ScreenCoordsGlobalToView(sc_GetGlobalScreenCoords());
-}
-vec2 getScreenUV()
-{
-return sc_GetViewScreenCoords();
-}
 bool sc_GetGlFrontFacing()
 {
 return gl_FrontFacing;
 }
+vec2 sc_GetGlobalScreenUV()
+{
+return sc_GetGlFragCoord().xy*sc_CurrentRenderTargetDims.zw;
+}
+vec2 sc_GetViewScreenUV()
+{
+return sc_ScreenCoordsGlobalToView(sc_GetGlobalScreenUV());
+}
 float depthScreenToViewSpace(float depth)
 {
-vec2 projectionMatrixTerms=vec2(sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][3].z);
+vec4 projectionMatrixTerms=vec4(sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][3].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].w,0.0);
 return depthScreenToViewSpace(depth,projectionMatrixTerms);
 }
 float depthViewToScreenSpace(float depth)
 {
-vec2 projectionMatrixTerms=vec2(sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][3].z);
+vec4 projectionMatrixTerms=vec4(sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][3].z,sc_ProjectionMatrixArray[sc_GetStereoViewIndex()][2].w,0.0);
 return depthViewToScreenSpace(depth,projectionMatrixTerms);
+}
+vec2 sc_GetGlobalScreenCoords()
+{
+return sc_GetGlobalScreenUV();
+}
+vec2 sc_GetViewScreenCoords()
+{
+return sc_GetViewScreenUV();
+}
+vec2 getScreenUV()
+{
+return sc_GetViewScreenUV();
 }
 #endif // #elif defined FRAGMENT_SHADER // #if defined VERTEX_SHADER
