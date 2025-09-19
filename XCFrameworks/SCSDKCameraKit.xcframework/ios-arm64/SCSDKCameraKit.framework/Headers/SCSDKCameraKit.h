@@ -5,6 +5,8 @@
 #import <SCSDKCameraKit/SCCameraKitARInput.h>
 #import <SCSDKCameraKit/SCCameraKitARSessionInput.h>
 #import <SCSDKCameraKit/SCCameraKitAVSessionInput.h>
+#import <SCSDKCameraKit/SCCameraKitStaticImageInput.h>
+#import <SCSDKCameraKit/SCCameraKitVideoAssetInput.h>
 #import <SCSDKCameraKit/SCCameraKitAVWriterOutput.h>
 #import <SCSDKCameraKit/SCCameraKitAccessTokenProvider.h>
 #import <SCSDKCameraKit/SCCameraKitAdjustment.h>
@@ -13,6 +15,7 @@
 #import <SCSDKCameraKit/SCCameraKitAgreementSet.h>
 #import <SCSDKCameraKit/SCCameraKitAgreementsPresentationContextProvider.h>
 #import <SCSDKCameraKit/SCCameraKitAgreementsStore.h>
+#import <SCSDKCameraKit/SCCameraKitCachesManager.h>
 #import <SCSDKCameraKit/SCCameraKitDataProviderComponent.h>
 #import <SCSDKCameraKit/SCCameraKitDeviceMotionDataProvider.h>
 #import <SCSDKCameraKit/SCCameraKitErrorCodes.h>
@@ -23,6 +26,7 @@
 #import <SCSDKCameraKit/SCCameraKitLens.h>
 #import <SCSDKCameraKit/SCCameraKitLensHintDelegate.h>
 #import <SCSDKCameraKit/SCCameraKitLensHintProvider.h>
+#import <SCSDKCameraKit/SCCameraKitLensHttpHandler.h>
 #import <SCSDKCameraKit/SCCameraKitLensLaunchData.h>
 #import <SCSDKCameraKit/SCCameraKitLensMediaPickerProvider.h>
 #import <SCSDKCameraKit/SCCameraKitLensPrefetcher.h>
@@ -31,6 +35,7 @@
 #import <SCSDKCameraKit/SCCameraKitLensRemoteApiService.h>
 #import <SCSDKCameraKit/SCCameraKitLensRepositoryGroupObserver.h>
 #import <SCSDKCameraKit/SCCameraKitLensRepositorySpecificObserver.h>
+#import <SCSDKCameraKit/SCCameraKitLensUIEventsDelegate.h>
 #import <SCSDKCameraKit/SCCameraKitLensesComponent.h>
 #import <SCSDKCameraKit/SCCameraKitLensesConfig.h>
 #import <SCSDKCameraKit/SCCameraKitLocationDataProvider.h>
@@ -42,6 +47,9 @@
 #import <SCSDKCameraKit/SCCameraKitTextInputContextProvider.h>
 #import <SCSDKCameraKit/SCCameraKitTexture.h>
 #import <SCSDKCameraKit/SCCameraKitUserData.h>
+#import <SCSDKCameraKit/SCCameraKitOutputRequiringPixelBuffer.h>
+#import <SCSDKCameraKit/SCCameraKitOutputSpecialCase.h>
+#import <SCSDKCameraKit/SCCameraKitOutputViewportProviding.h>
 
 #import <Foundation/Foundation.h>
 

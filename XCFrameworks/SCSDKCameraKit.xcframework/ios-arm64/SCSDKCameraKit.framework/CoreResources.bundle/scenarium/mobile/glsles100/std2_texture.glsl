@@ -1,25 +1,25 @@
 #pragma once
 //SG_REFLECTION_BEGIN(100)
 //SG_REFLECTION_END
+#ifndef sc_TextureRenderingLayout_Regular
+#define sc_TextureRenderingLayout_Regular 0
+#define sc_TextureRenderingLayout_StereoInstancedClipped 1
+#define sc_TextureRenderingLayout_StereoMultiview 2
+#endif
+#define depthToGlobal   depthScreenToViewSpace
+#define depthToLocal    depthViewToScreenSpace
+#ifndef quantizeUV
+#define quantizeUV sc_QuantizeUV
+#define sc_platformUVFlip sc_PlatformFlipV
+#define sc_PlatformFlipUV sc_PlatformFlipV
+#endif
+#ifndef sc_texture2DLod
+#define sc_texture2DLod sc_InternalTextureLevel
+#define sc_textureLod sc_InternalTextureLevel
+#define sc_textureBias sc_InternalTextureBiasOrLevel
+#define sc_texture sc_InternalTexture
+#endif
 #if defined VERTEX_SHADER
-    #ifndef sc_TextureRenderingLayout_Regular
-        #define sc_TextureRenderingLayout_Regular 0
-        #define sc_TextureRenderingLayout_StereoInstancedClipped 1
-        #define sc_TextureRenderingLayout_StereoMultiview 2
-    #endif
-    #define depthToGlobal   depthScreenToViewSpace
-    #define depthToLocal    depthViewToScreenSpace
-    #ifndef quantizeUV
-        #define quantizeUV sc_QuantizeUV
-        #define sc_platformUVFlip sc_PlatformFlipV
-        #define sc_PlatformFlipUV sc_PlatformFlipV
-    #endif
-    #ifndef sc_texture2DLod
-        #define sc_texture2DLod sc_InternalTextureLevel
-        #define sc_textureLod sc_InternalTextureLevel
-        #define sc_textureBias sc_InternalTextureBiasOrLevel
-        #define sc_texture sc_InternalTexture
-    #endif
 #include <required2.glsl>
 #include <std2_texture_sub.glsl>
 vec2 sc_PlatformFlipV(vec2 uv)
@@ -599,28 +599,56 @@ vec4 l9_0=sc_InternalTextureLevel(combinedSmp,uv,level_);
 vec4 l9_1=l9_0;
 return l9_0;
 }
-float depthScreenToViewSpace(float depth,vec2 projectionMatrixTerms)
+float depthScreenToViewSpace(float depth,vec4 projectionMatrixTerms)
 {
 float m22=projectionMatrixTerms.x;
 float m32=projectionMatrixTerms.y;
+bool isOrthographic=projectionMatrixTerms.z==0.0;
 depth=(depth*2.0)-1.0;
-return m32/((-depth)-m22);
-}
-float depthViewToScreenSpace(float depth,vec2 projectionMatrixTerms)
-{
-float m22=projectionMatrixTerms.x;
-float m32=projectionMatrixTerms.y;
 float l9_0;
-if (depth!=0.0)
+if (isOrthographic)
 {
-l9_0=(-m22)-(m32/depth);
+l9_0=(depth-m32)/m22;
 }
 else
 {
-l9_0=0.0;
+l9_0=m32/((-depth)-m22);
+}
+return l9_0;
+}
+float depthViewToScreenSpace(float depth,vec4 projectionMatrixTerms)
+{
+float m22=projectionMatrixTerms.x;
+float m32=projectionMatrixTerms.y;
+bool isOrthographic=projectionMatrixTerms.z==0.0;
+float l9_0;
+if (isOrthographic)
+{
+l9_0=(depth*m22)+m32;
+}
+else
+{
+float l9_1;
+if (depth!=0.0)
+{
+l9_1=(-m22)-(m32/depth);
+}
+else
+{
+l9_1=0.0;
+}
+l9_0=l9_1;
 }
 depth=l9_0;
 return (depth*0.5)+0.5;
+}
+float depthScreenToViewSpace(float depth,vec2 projectionMatrixTerms)
+{
+return depthScreenToViewSpace(depth,vec4(projectionMatrixTerms.x,projectionMatrixTerms.y,-1.0,0.0));
+}
+float depthViewToScreenSpace(float depth,vec2 projectionMatrixTerms)
+{
+return depthViewToScreenSpace(depth,vec4(projectionMatrixTerms.x,projectionMatrixTerms.y,-1.0,0.0));
 }
 vec4 sampleTextureWithTransform(vec2 uv,bool useUvTransform,mat3 uvTransform,highp sampler2D texsmp)
 {
@@ -633,24 +661,6 @@ uv=sc_TransformUV(uv,useUvTransform,uvTransform);
 return sc_InternalTextureBiasOrLevel(combinedSmp,uv,0.0);
 }
 #elif defined FRAGMENT_SHADER // #if defined VERTEX_SHADER
-    #ifndef sc_TextureRenderingLayout_Regular
-        #define sc_TextureRenderingLayout_Regular 0
-        #define sc_TextureRenderingLayout_StereoInstancedClipped 1
-        #define sc_TextureRenderingLayout_StereoMultiview 2
-    #endif
-    #define depthToGlobal   depthScreenToViewSpace
-    #define depthToLocal    depthViewToScreenSpace
-    #ifndef quantizeUV
-        #define quantizeUV sc_QuantizeUV
-        #define sc_platformUVFlip sc_PlatformFlipV
-        #define sc_PlatformFlipUV sc_PlatformFlipV
-    #endif
-    #ifndef sc_texture2DLod
-        #define sc_texture2DLod sc_InternalTextureLevel
-        #define sc_textureLod sc_InternalTextureLevel
-        #define sc_textureBias sc_InternalTextureBiasOrLevel
-        #define sc_texture sc_InternalTexture
-    #endif
 #include <required2.glsl>
 #include <std2_texture_sub.glsl>
 vec2 sc_PlatformFlipV(vec2 uv)
@@ -1330,28 +1340,56 @@ l9_0=sc_InternalTextureBiasOrLevel(combinedSmp,uv,level_);
 }
 return l9_0;
 }
-float depthScreenToViewSpace(float depth,vec2 projectionMatrixTerms)
+float depthScreenToViewSpace(float depth,vec4 projectionMatrixTerms)
 {
 float m22=projectionMatrixTerms.x;
 float m32=projectionMatrixTerms.y;
+bool isOrthographic=projectionMatrixTerms.z==0.0;
 depth=(depth*2.0)-1.0;
-return m32/((-depth)-m22);
-}
-float depthViewToScreenSpace(float depth,vec2 projectionMatrixTerms)
-{
-float m22=projectionMatrixTerms.x;
-float m32=projectionMatrixTerms.y;
 float l9_0;
-if (depth!=0.0)
+if (isOrthographic)
 {
-l9_0=(-m22)-(m32/depth);
+l9_0=(depth-m32)/m22;
 }
 else
 {
-l9_0=0.0;
+l9_0=m32/((-depth)-m22);
+}
+return l9_0;
+}
+float depthViewToScreenSpace(float depth,vec4 projectionMatrixTerms)
+{
+float m22=projectionMatrixTerms.x;
+float m32=projectionMatrixTerms.y;
+bool isOrthographic=projectionMatrixTerms.z==0.0;
+float l9_0;
+if (isOrthographic)
+{
+l9_0=(depth*m22)+m32;
+}
+else
+{
+float l9_1;
+if (depth!=0.0)
+{
+l9_1=(-m22)-(m32/depth);
+}
+else
+{
+l9_1=0.0;
+}
+l9_0=l9_1;
 }
 depth=l9_0;
 return (depth*0.5)+0.5;
+}
+float depthScreenToViewSpace(float depth,vec2 projectionMatrixTerms)
+{
+return depthScreenToViewSpace(depth,vec4(projectionMatrixTerms.x,projectionMatrixTerms.y,-1.0,0.0));
+}
+float depthViewToScreenSpace(float depth,vec2 projectionMatrixTerms)
+{
+return depthViewToScreenSpace(depth,vec4(projectionMatrixTerms.x,projectionMatrixTerms.y,-1.0,0.0));
 }
 vec4 sampleTextureWithTransform(vec2 uv,bool useUvTransform,mat3 uvTransform,highp sampler2D texsmp)
 {
